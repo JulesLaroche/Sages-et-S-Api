@@ -41,12 +41,12 @@ connection.connect((err) => {
 // Requete post création user 
 
 app.post('/users', async (req, res) => { // Ajoutez le mot-clé 'async' pour pouvoir utiliser 'await'
-  const query = `INSERT INTO users (id, firstname, lastname, email, password) VALUES (?, ?, ?, ?, ?)`;
-  const values = [req.body.id, req.body.firstname, req.body.lastname, req.body.email, req.body.password];
+  const query = `INSERT INTO users (id, firstname, lastname, email, category, password) VALUES (?, ?, ?, ?, ?, ?)`;
+  const values = [req.body.id, req.body.firstname, req.body.lastname, req.body.email,req.body.category , req.body.password];
 
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10); // Hachez le mot de passe avec bcryptjs
-    values[4] = hashedPassword;
+    values[5] = hashedPassword;
 
     connection.query(query, values, (err, result) => {
       if (err) {
@@ -63,6 +63,27 @@ app.post('/users', async (req, res) => { // Ajoutez le mot-clé 'async' pour pou
     res.status(500).json({ error: 'Erreur serveur' });
   }
 });
+
+app.delete('/users/:id', async (req, res) => {
+  const userId = req.params.id;
+
+  try {
+    // Effectuer les opérations nécessaires pour supprimer le compte utilisateur avec l'ID userId
+
+    // Exemple de code pour supprimer le compte utilisateur de la base de données
+    await connection.query('DELETE FROM users WHERE id = ?', userId);
+
+    res.sendStatus(200); // Envoyer une réponse réussie
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Erreur serveur' });
+  }
+});
+
+
+
+
 
 // Requete post connexion user 
 
@@ -231,6 +252,52 @@ app.post('/contact', (req, res) => {
 
 
 
+// Recupère l'id dans services
+app.get('/services/user/:id', (req, res) => {
+  const annonceId = req.params.id;
+
+  const sql = 'SELECT user_id, img_name FROM services WHERE id = ?';
+  connection.query(sql, [annonceId], (err, result) => {
+    if (err) {
+      console.error("Erreur lors de la récupération de l'user_id et de l'img_name :", err);
+      res.status(500).json({ error: 'Erreur serveur' });
+    } else {
+      if (result.length > 0) {
+        const { user_id, img_name } = result[0];
+        res.json({ user_id, img_name });
+      } else {
+        res.status(404).json({ error: 'Annonce non trouvée' });
+      }
+    }
+  });
+});
+
+
+// Recupère l'annonce avec l'id annonce
+app.get('/service/annonces/:id', (req, res) => {
+  const annonceId = req.params.id;
+
+  const query = `SELECT id, title, type, category, description, price, disponibilite, address, postal_code, img_name, city, user_id FROM services WHERE id = ?`;
+
+  connection.query(query, [annonceId], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'annonce :', err);
+      res.status(500).json({ error: 'Erreur serveur' });
+      return;
+    }
+
+    if (results.length === 0) {
+      res.status(404).json({ message: 'Annonce non trouvée' });
+      return;
+    }
+
+    const annonce = results[0];
+    console.log('Annonce récupérée avec succès');
+    res.status(200).json(annonce);
+  });
+});
+
+
 
 // Recupère toutes les annonces
 app.get('/service/annonces', (req, res) => {
@@ -248,6 +315,25 @@ app.get('/service/annonces', (req, res) => {
   });
 });
 
+// Récupère les informations d'une annonce par ID
+app.get('/services/user/:id', (req, res) => {
+  const annonceId = req.params.id;
+
+  const sql = 'SELECT services.id, services.title, services.description, services.type, services.category, services.postal_code, services.city, services.disponibilite, services.price, users.firstname, users.img_name FROM services INNER JOIN users ON services.user_id = users.id WHERE services.id = ?';
+  connection.query(sql, [annonceId], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la récupération de l\'annonce :', err);
+      res.status(500).json({ error: 'Erreur serveur' });
+    } else {
+      if (result.length > 0) {
+        const { id, title, description, type, category, postal_code, city, disponibilite, price, firstname, img_name } = result[0];
+        res.json({ id, title, description, type, category, postal_code, city, disponibilite, price, user: { firstname, img_name } });
+      } else {
+        res.status(404).json({ error: 'Annonce non trouvée' });
+      }
+    }
+  });
+});
 
 
 
@@ -275,6 +361,31 @@ app.post('/service', (req, res) => {
   });
 });
 
+
+
+
+// Requete delete de mes annonces
+app.delete('/service/:id', (req, res) => {
+  const { id } = req.params;
+
+  const query = `DELETE FROM services WHERE id = ?`;
+  const values = [id];
+
+  connection.query(query, values, (err, result) => {
+    if (err) {
+      console.error('Erreur lors de la suppression de l\'annonce de service :', err);
+      res.status(500).json({ error: 'Erreur serveur' });
+      return;
+    }
+
+    if (result.affectedRows === 0) {
+      res.status(404).json({ error: 'L\'annonce spécifiée est introuvable.' });
+    } else {
+      console.log('Annonce de service supprimée avec succès');
+      res.status(200).json({ message: 'L\'annonce de service a été supprimée avec succès.' });
+    }
+  });
+});
 
 // Requete get de mes annonces
 
@@ -373,6 +484,7 @@ app.post('/upload-annonce-photo', uploadAnnonce.single('file'), (req, res) => {
 
   res.status(200).json({ message: 'Image de l\'annonce téléchargée avec succès', photoFilename: file.filename });
 });
+
 
 
 
