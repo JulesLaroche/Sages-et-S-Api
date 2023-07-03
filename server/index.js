@@ -3,7 +3,7 @@ const mysql = require('mysql');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 
-// Connexion a ma base
+//////////////////////////////////////////////////// Connexion a ma base
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 3001;
 
 const app = express();
 app.use(express.static('public'));
-// CORS sur l'appli
+//////////////////////////////////////////////////// CORS sur l'appli
 
 app.use(cors({
   origin: 'http://localhost:5173',
@@ -23,6 +23,8 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+
 
 
 
@@ -38,7 +40,11 @@ connection.connect((err) => {
   console.log('Connexion à la base de données réussie !');
 });
 
-// Requete post création user 
+
+
+//////////////////////////////////////////////////// USER
+
+//////////////////////////////////////////////////// Requete post création user 
 
 app.post('/users', async (req, res) => { // Ajoutez le mot-clé 'async' pour pouvoir utiliser 'await'
   const query = `INSERT INTO users (id, firstname, lastname, email, category, password) VALUES (?, ?, ?, ?, ?, ?)`;
@@ -64,6 +70,8 @@ app.post('/users', async (req, res) => { // Ajoutez le mot-clé 'async' pour pou
   }
 });
 
+//////////////////////////////////////////////////// Delete USER
+
 app.delete('/users/:id', async (req, res) => {
   const userId = req.params.id;
 
@@ -82,10 +90,7 @@ app.delete('/users/:id', async (req, res) => {
 });
 
 
-
-
-
-// Requete post connexion user 
+//////////////////////////////////////////////////// Requete post connexion user 
 
 app.post('/login', (req, res) => {
   const { email, password } = req.body;
@@ -123,7 +128,7 @@ app.post('/login', (req, res) => {
   });
 });
 
-// Requete post recherche tous les user 
+//////////////////////////////////////////////////// Requete post recherche tous les user 
 
 app.get('/users/:id', (req, res) => {
   const userId = req.params.id;
@@ -144,6 +149,7 @@ app.get('/users/:id', (req, res) => {
   });
 });
 
+
 app.get('/users', (req, res) => {
   connection.query('SELECT * FROM users', (err, results) => {
     if (err) {
@@ -155,7 +161,7 @@ app.get('/users', (req, res) => {
   });
 });
 
-// Requete update sur le profile user 
+//////////////////////////////////////////////////// Requete update sur le profile user 
 
 app.put('/users/:id', (req, res) => {
   const { id } = req.params;
@@ -180,7 +186,7 @@ app.put('/users/:id', (req, res) => {
   });
 });
 
-// upload image profil
+//////////////////////////////////////////////////// upload image profil
 
 
 const multer = require('multer');
@@ -229,8 +235,8 @@ app.post('/upload-profile-photo', upload.single('file'), (req, res) => {
 
 
 
-
-// Requete post de mon formulaire contact 
+//////////////////////////////////////////////////// FORMULAIRE CONTACT 
+//////////////////////////////////////////////////// Requete post de mon formulaire contact 
 
 app.post('/contact', (req, res) => {
   const { firstName, lastName, email, phone, message } = req.body;
@@ -252,7 +258,9 @@ app.post('/contact', (req, res) => {
 
 
 
-// Recupère l'id dans services
+
+////////////////////////////////////////////////////  ANNONCE
+//////////////////////////////////////////////////// Recupère l'id dans services
 app.get('/services/user/:id', (req, res) => {
   const annonceId = req.params.id;
 
@@ -272,8 +280,7 @@ app.get('/services/user/:id', (req, res) => {
   });
 });
 
-
-// Recupère l'annonce avec l'id annonce
+//////////////////////////////////////////////////// Recupère l'annonce avec l'id annonce
 app.get('/service/annonces/:id', (req, res) => {
   const annonceId = req.params.id;
 
@@ -297,9 +304,7 @@ app.get('/service/annonces/:id', (req, res) => {
   });
 });
 
-
-
-// Recupère toutes les annonces
+//////////////////////////////////////////////////// Recupère toutes les annonces
 app.get('/service/annonces', (req, res) => {
   const query = `SELECT id, title, type, category, description, price, disponibilite, address, postal_code, img_name, city, user_id FROM services`;
 
@@ -315,7 +320,7 @@ app.get('/service/annonces', (req, res) => {
   });
 });
 
-// Récupère les informations d'une annonce par ID
+//////////////////////////////////////////////////// Récupère les informations d'une annonce par ID
 app.get('/services/user/:id', (req, res) => {
   const annonceId = req.params.id;
 
@@ -335,13 +340,7 @@ app.get('/services/user/:id', (req, res) => {
   });
 });
 
-
-
-
-
-
-
-// Requete post de mes annonces
+//////////////////////////////////////////////////// Requete post de mes annonces
 
 app.post('/service', (req, res) => {
   const { title, type, category, description, price, disponibilite, address, postal_code,img_name, city, user_id } = req.body;
@@ -361,10 +360,7 @@ app.post('/service', (req, res) => {
   });
 });
 
-
-
-
-// Requete delete de mes annonces
+//////////////////////////////////////////////////// Requete delete de mes annonces
 app.delete('/service/:id', (req, res) => {
   const { id } = req.params;
 
@@ -387,7 +383,7 @@ app.delete('/service/:id', (req, res) => {
   });
 });
 
-// Requete get de mes annonces
+//////////////////////////////////////////////////// Requete get de mes annonces
 
 app.get('/service/user/:userId', (req, res) => {
   const userId = req.params.userId;
@@ -408,7 +404,7 @@ app.get('/service/user/:userId', (req, res) => {
 });
 
 
-// Requete get de mes annonces pour modifier annonce
+//////////////////////////////////////////////////// Requete get de mes annonces pour modifier annonce
 // GET /service/:id
 app.get('/service/:id', (req, res) => {
   const { id } = req.params;
@@ -432,7 +428,7 @@ app.get('/service/:id', (req, res) => {
   });
 });
 
-// Requete put de mes annonces pour modifier annonce
+//////////////////////////////////////////////////// Requete put de mes annonces pour modifier annonce
 
 app.put('/service/:id', (req, res) => {
   const { id } = req.params;
@@ -483,6 +479,41 @@ app.post('/upload-annonce-photo', uploadAnnonce.single('file'), (req, res) => {
   // Effectuez les opérations nécessaires pour enregistrer le nom du fichier dans la base de données ou effectuer d'autres traitements
 
   res.status(200).json({ message: 'Image de l\'annonce téléchargée avec succès', photoFilename: file.filename });
+});
+
+
+
+//////////////////////////////////////////////////// CHAT
+//////////////////////////////////////////////////// Requete post message
+
+app.post('/chat', (req, res) => {
+  const { user_id, creator_id, message } = req.body;
+  const created_at = new Date();
+
+  const query = 'INSERT INTO chat (user_id, creator_id, message, created_at) VALUES (?, ?, ?, ?)';
+  connection.query(query, [user_id, creator_id, message, created_at], (err, results) => {
+    if (err) {
+      console.error('Erreur lors de l\'ajout du message:', err);
+      res.status(500).json({ error: 'Erreur lors de l\'ajout du message' });
+    } else {
+      console.log('Message ajouté avec succès');
+      res.sendStatus(200);
+    }
+  });
+});
+
+//////////////////////////////////////////////////// Requete get message
+app.get('/chat', (req, res) => {
+  const query = 'SELECT * FROM chat';
+  connection.query(query, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des messages:', err);
+      res.status(500).json({ error: 'Erreur lors de la récupération des messages' });
+    } else {
+      console.log('Messages récupérés avec succès');
+      res.json(results);
+    }
+  });
 });
 
 
