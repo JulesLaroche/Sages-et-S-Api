@@ -10,6 +10,8 @@ const profileRoutes = require("./routes/profileRoutes");
 const creditsRoutes = require('./routes/creditsRoutes');
 const cookieParser = require("cookie-parser");
 const authenticate = require("./middleware/authenticate");
+const validateRoutes = require('./routes/validateRoutes');
+
 
 const connection = require('./config/database');
 
@@ -29,7 +31,7 @@ app.use(cors({
 }));
 
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: 'http://localhost:5173', 
   credentials: true,
   allowedHeaders: ['Content-Type', 'Authorization']
 };
@@ -57,6 +59,8 @@ app.use('/chat', authenticate, chatRoutes);
 
 // Utiliser les routes des credits
 app.use('/credits', creditsRoutes);
+
+app.use('/validate', validateRoutes);
 
 // app.use('/profile', profileRoutes);
 
