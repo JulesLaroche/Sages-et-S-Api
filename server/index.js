@@ -11,6 +11,7 @@ const creditsRoutes = require('./routes/creditsRoutes');
 const cookieParser = require("cookie-parser");
 const authenticate = require("./middleware/authenticate");
 const validateRoutes = require('./routes/validateRoutes');
+const confirmationRoutes = require('./routes/confirmationRoutes');
 
 
 const connection = require('./config/database');
@@ -60,7 +61,13 @@ app.use('/chat', authenticate, chatRoutes);
 // Utiliser les routes des credits
 app.use('/credits', creditsRoutes);
 
+// Utiliser les routes pour validé l'annonce
 app.use('/validate', validateRoutes);
+
+// Utiliser les routes pour envoyer les infos après validation
+app.use('/confirmation', confirmationRoutes);
+
+
 
 // app.use('/profile', profileRoutes);
 
