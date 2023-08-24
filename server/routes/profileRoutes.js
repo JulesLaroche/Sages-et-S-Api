@@ -2,6 +2,7 @@ const express = require('express');
 const multer = require('multer');
 const path = require('path');
 const profilePhotoController = require('../controllers/profilePhotoController');
+const verifyToken = require('../middleware/verifyToken');
 
 const router = express.Router();
 

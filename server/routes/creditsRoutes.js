@@ -3,6 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const creditsController = require('../controllers/creditsController');
+const verifyToken = require('../middleware/verifyToken');
 
 // POST /credits
 router.post('/', creditsController.addCredits);

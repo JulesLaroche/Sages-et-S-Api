@@ -1,27 +1,27 @@
 const express = require('express');
 const router = express.Router();
+const verifyToken = require('../middleware/verifyToken'); // Importez le middleware
 const serviceController = require('../controllers/serviceController');
+
 // POST /service
-router.post('/', serviceController.createService);
+router.post('/', verifyToken, serviceController.createService);
 
 // GET /service/:id
-router.get('/:id', serviceController.getServiceById);
+router.get('/:id', verifyToken, serviceController.getServiceById);
 
 // GET /service
-router.get('/', serviceController.getAllServices);
+router.get('/', verifyToken, serviceController.getAllServices);
 
 // PUT /service/:id
-router.put('/:id', serviceController.updateService);
+router.put('/:id', verifyToken, serviceController.updateService);
 
 // DELETE /service/:id
-router.delete('/:id', serviceController.deleteService);
+router.delete('/:id', verifyToken, serviceController.deleteService);
 
 // GET /service/user/:userId
-router.get('/user/:userId', serviceController.getServicesByUserId);
+router.get('/user/:userId', verifyToken, serviceController.getServicesByUserId);
 
 // GET /service/edit/:id
-router.get('/edit/:id', serviceController.getServiceForEdit);
-
-
+router.get('/edit/:id', verifyToken, serviceController.getServiceForEdit);
 
 module.exports = router;
