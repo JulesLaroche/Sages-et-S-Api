@@ -13,6 +13,7 @@ const validateRoutes = require("./routes/validateRoutes");
 const confirmationRoutes = require("./routes/confirmationRoutes");
 
 
+
 const connection = require("./config/database");
 
 const PORT = process.env.PORT || 3001;
@@ -70,7 +71,7 @@ app.use("/validate", validateRoutes);
 // Utiliser les routes pour envoyer les infos après validation
 app.use("/confirmation", confirmationRoutes);
 
-// app.use('/profile', profileRoutes);
+app.use('/profile', profileRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
@@ -83,6 +84,14 @@ connection.connect((err) => {
   }
   console.log("Connexion à la base de données réussie !");
 });
+
+
+
+
+
+
+
+
 
 // // //////////////////////////////////////////////////// upload image profil
 

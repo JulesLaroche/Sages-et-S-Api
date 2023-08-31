@@ -7,21 +7,21 @@ const serviceController = require('../controllers/serviceController');
 router.post('/', verifyToken, serviceController.createService);
 
 // GET /service/:id
-router.get('/:id', verifyToken, serviceController.getServiceById);
+router.get('/:id',verifyToken,  serviceController.getServiceById);
 
 // GET /service
 router.get('/', verifyToken, serviceController.getAllServices);
 
 // PUT /service/:id
-router.put('/:id', verifyToken, serviceController.updateService);
+router.put('/:id',verifyToken,  serviceController.updateService);
 
 // DELETE /service/:id
-router.delete('/:id', verifyToken, serviceController.deleteService);
+router.delete('/:id',verifyToken,  serviceController.deleteService);
 
 // GET /service/user/:userId
-router.get('/user/:userId', verifyToken, serviceController.getServicesByUserId);
+router.get('/user/:userId',verifyToken, serviceController.getServicesByUserId);
 
 // GET /service/edit/:id
-router.get('/edit/:id', verifyToken, serviceController.getServiceForEdit);
+router.get('/edit/:id',verifyToken,  serviceController.getServiceForEdit);
 
 module.exports = router;
