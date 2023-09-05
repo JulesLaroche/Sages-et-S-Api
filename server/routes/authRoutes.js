@@ -5,7 +5,7 @@ const bcrypt = require("bcryptjs");
 const connection = require("../config/database");
 const verifyToken = require('../middleware/verifyToken');
 
-const secretKey = "jules"; // Remplacez par votre clé secrète
+const secretKey = "******"; // Remplacez par votre clé secrète
 
 
 
