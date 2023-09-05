@@ -2,7 +2,7 @@
 
 const jwt = require("jsonwebtoken");
 
-const secretKey = "jules"; // Clé secrète pour décoder le token
+const secretKey = "******"; // Clé secrète pour décoder le token
 
 const verifyToken = (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1]; // Essaye de récupérer le token depuis les cookies ou les en-têtes
